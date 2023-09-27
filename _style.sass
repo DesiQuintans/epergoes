@@ -1,0 +1,78 @@
+@use "sass:list"
+@use "sass:color"
+
+
+
+/// Makes an element blink by changing its background colour.
+///
+/// @param {string} $bg_col
+///     The background colour to blink into.
+/// @param {string} $speed
+///     Blinking speed.
+@mixin blink($bg_col: blue, $speed: 0.5s)
+    background-color: $bg_col
+    animation: blinking_bg $speed linear infinite
+
+@keyframes blinking_bg
+    25%
+        background-color: color.adjust(blue, $alpha: -1)
+    75%
+        background-color: color.adjust(blue, $alpha: -1)
+
+
+
+/// Styles text and its background.
+///
+/// @param {list} $mylist
+///     A 5-element list (color, background-color, style, weight, decoration).
+@mixin text($mylist)
+    color:             list.nth($mylist, 1)
+    background-color:  list.nth($mylist, 2)
+    font-style:        list.nth($mylist, 3)
+    font-weight:       list.nth($mylist, 4)
+    text-decoration:   list.nth($mylist, 5)
+
+
+
+/// Styles a border (borders are drawn inside the element).
+///
+/// @param {list} $mylist
+///     A 4-element list (border-width, border-style, border-colour, background-color).
+/// @param {string} $which
+///     Side to draw border on. `""` (default) draws all sides. `"-left"` draws
+///     only on the left, etc.
+@mixin border($mylist, $which: "", $important: false)
+    @if $important
+        border#{$which}-width:     list.nth($mylist, 1) !important
+        border#{$which}-style:     list.nth($mylist, 2) !important
+        border#{$which}-color:     list.nth($mylist, 3) !important
+        background-color: list.nth($mylist, 4) !important
+    @else
+        border#{$which}-width:     list.nth($mylist, 1)
+        border#{$which}-style:     list.nth($mylist, 2)
+        border#{$which}-color:     list.nth($mylist, 3)
+        background-color: list.nth($mylist, 4)
+
+
+
+/// Styles an outline (outlines are drawn outside the element).
+///
+/// @param {list} $mylist
+///     A 4-element list (outline-width, outline-style, outline-colour, background-color).
+@mixin outline($mylist)
+    outline-width:     list.nth($mylist, 1)
+    outline-style:     list.nth($mylist, 2)
+    outline-color:     list.nth($mylist, 3)
+    background-color:  list.nth($mylist, 4)
+
+
+
+/// Styles a radial gradient.
+///
+/// @param {list} $mylist
+///     An 2-element list of colours.
+@mixin radial_gradient($mylist)
+    background: list.nth($mylist, 1)
+    background: radial-gradient(circle at 25% 50%, list.nth($mylist, 1), list.nth($mylist, 2))
+    //background: radial-gradient(list.nth($mylist, 1), list.nth($mylist, 2))
+    //background: linear-gradient(to right, list.nth($mylist, 1) 50%, list.nth($mylist, 2) 100%)

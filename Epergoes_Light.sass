@@ -1,0 +1,542 @@
+/*! rs-theme-name: Epergoes (Light) */
+/*! rs-theme-is-dark: FALSE */
+
+@use "sass:list"
+@use "sass:color"
+@use "style.sass"
+
+// ------- User-editable values begin -----------------------------------------
+
+$whiteA:  #FFFFFF
+$greyB:   #AAAAAA
+$greyC:   #555555
+$blackD:  #000000
+$blueA:   #AAAAFF
+$blueB:   #5555FF
+$blueC:   #0000FF
+$yellowA: #FFFFAA
+$yellowB: #FFFF00
+$yellowC: #AAAA00
+
+$greyB_lgt:   color.adjust(#AAAAAA, $lightness: 25%)
+$greyC_lgt:   color.adjust(#555555, $lightness: 55%)
+$blackD_lgt:  color.adjust(#000000, $lightness: 50%)
+$blueA_lgt:   color.adjust(#AAAAFF, $lightness: 12%)
+$blueB_lgt:   color.adjust(#5555FF, $lightness: 50%)
+$blueC_lgt:   color.adjust(#0000FF, $lightness: 50%)
+$yellowA_lgt: color.adjust(#FFFFAA, $lightness: 50%)
+$yellowB_lgt: color.adjust(#FFFF00, $lightness: 50%)
+$yellowC_lgt: color.adjust(#AAAA00, $lightness: 50%)
+
+$whiteA_trans:  #FFFFFF1F
+$greyB_trans:   #AAAAAA1F
+$greyC_trans:   #5555551F
+$blueA_trans:   #AAAAFF33
+$blueB_trans:   #5555FF33
+$blueC_trans:   #0000FF33
+$yellowA_trans: #FFFFAA33
+$yellowB_trans: #FFFF0033
+$yellowC_trans: #AAAA0033
+
+// Text styles
+// (1) color, (2) background-color, (3) style, (4) weight, (5) decoration.
+
+$editor:        $blackD $whiteA normal  normal  none
+$gutter:        $greyB $whiteA inherit inherit inherit
+
+$r_numeric:     inherit inherit inherit inherit inherit
+$r_character:   inherit $blueA_lgt inherit inherit inherit
+$r_reserved:    inherit inherit inherit bold inherit
+$r_symbol:      inherit inherit inherit inherit inherit
+$r_function:    $blueC inherit inherit bold    inherit
+$r_package:     $blueC inherit inherit inherit inherit
+$r_operator:    inherit inherit inherit inherit    inherit
+
+$md_italic:     inherit inherit italic  normal  inherit
+$md_bold:       inherit inherit inherit bold    inherit
+$md_code:       inherit $greyB_lgt inherit inherit inherit
+$md_blockquote: inherit inherit italic inherit inherit
+$md_heading:    $yellowB $blueB inherit bold    inherit
+$md_url:        inherit inherit inherit inherit inherit
+$md_refnum:     inherit inherit inherit inherit inherit
+
+$r_comment:     $blackD $yellowA inherit inherit inherit
+$doc_arg:       inherit $yellowA inherit inherit underline
+$doc_tag:       inherit $yellowA inherit bold inherit
+
+$whitespace:    $yellowC $greyB_lgt inherit inherit inherit
+$unprintable:   $blueC $yellowC inherit inherit inherit
+
+$sectionhead:   $yellowB $blueB inherit inherit    inherit
+$chunk_head:    inherit inherit italic  inherit    inherit
+$chunk_tail:    inherit inherit inherit inherit    inherit
+$fold:          inherit $yellowB inherit inherit inherit
+
+$help_link:     $blueC $blueA_lgt inherit inherit underline
+$err_warn_msg:  inherit inherit inherit inherit inherit
+$unsaved_file:  $blackD inherit italic  bold    inherit
+
+
+// Border styles
+// (1) border-width, (2) border-style, (3) border-colour, (4) background-color.
+
+$line_ruler:      1px dashed $greyB none
+$indent_guide:    1px solid  $greyB none
+$chunk_body:      0px solid  none none
+
+$ui_tab_bar:      1px solid  inherit $greyB_lgt
+$ui_active_tab:   1px solid  $blackD $whiteA
+$ui_inactive_tab: 1px solid  $greyB $greyC_lgt
+$pane_div:        1px solid  none inherit
+
+
+// Outline styles
+// (1) outline-width, (2) outline-style, (3) outline-colour, (4) background-color.
+
+// These styles should have a transparent background colour.
+// The inactive selection should be fully transparent because it is also drawn
+// underneath the active selection; giving both elements opacity means that the
+// actively selected object will be obscured behind both layers.
+
+$active:   2px     solid   $blueB $yellowB_trans
+$inactive: 2px     dotted  $blueB #00000000
+$currline: inherit inherit inherit $greyB_trans
+$debug:    0px     dashed  inherit $yellowC_trans
+
+
+
+// Non-standard styles.
+
+// (1) color, (2) width.
+$cursor:      $blackD 3px
+
+// (1) center of gradient, (2) edge of gradient
+$chunk_grad:  $whiteA_trans $greyB_trans
+
+// These colours are used for both rainbow indentation guides and rainbow
+// brackets. These are named colours so that the suggested clearing-out regex
+// of `#.{3,8}` -> `inherit` doesn't get rid of them. They're used to
+// calculate the rainbow fill gradient and can't be missing or inherited.
+$rainbow0: #800000
+$rainbow1: #4363d8
+$rainbow2: #f58231
+$rainbow3: #dcbeff
+$rainbow4: #9A6324
+$rainbow5: #000075
+$rainbow6: #469990
+
+
+
+// ------- User-editable values end here. -------------------------------------
+// ------- CSS selectors are below this line. ---------------------------------
+
+// ------- Draw order of elements ---------------------------------------------
+
+.ace_cursor-layer
+    z-index: 9
+
+.ace_marker-layer
+    z-index: 8
+
+.ace_print-margin-layer
+    z-index: 5
+
+.ace_text-layer
+    z-index: 3
+
+
+// ------- Global styles ------------------------------------------------------
+
+// Styles all panes.
+.ace_editor, .ace_editor_theme .profvis-flamegraph, .ace_editor_theme
+    @include style.text($editor)
+
+// The cursor. Should control the cursor in all panes, including the Terminal.
+.ace_cursor
+    color:        list.nth($cursor, 1) !important
+    border-color: list.nth($cursor, 1) !important
+    border-width: list.nth($cursor, 2) !important
+
+// RST matching bracket.
+.ace_marker-layer .ace_bracket
+    @include style.blink($blueB, 0.75s)
+
+// R: Sandwiched lines of RMD code block only
+.ace_marker-layer .ace_foreign_line
+    position: absolute
+    z-index: -200 !important
+    @include style.radial_gradient($chunk_grad)
+    @include style.border($chunk_body, "-left")
+    @include style.border($chunk_body, "-right")
+
+
+// R comments.
+.ace_line > .ace_comment
+    @include style.text($r_comment)
+
+    // R comments recognised as section headers.
+    &.ace_sectionhead
+        @include style.text($sectionhead)
+        padding-left: 1px
+
+    // Roxygen spaces, for some reason. Don't style it.
+    // &.ace_virtual-comment
+
+
+
+// RMD [number in footnotes]:
+.ace_line > .ace_constant
+    @include style.text($md_refnum)
+
+    // R reserved words (TRUE, FALSE, NA, etc.)
+    &.ace_language
+        @include style.text($r_reserved)
+
+        // RMD _Italic_ *text* and _**Bold italic**_ (**_..._** does not work)
+        &.ace_boolean.ace_text
+            @include style.text($md_italic)
+
+        // ROXY _italics_ and _**bi**_ (any number of outer _)
+        &.ace_boolean.ace_virtual-comment
+            @include style.text($md_italic)
+            background-color: list.nth($r_comment, 2)
+
+    // R integers and doubles
+    &.ace_numeric
+        @include style.text($r_numeric)
+
+        // RMD **Bold text** and ***bold***
+        &.ace_text
+            @include style.text($md_bold)
+
+        // ROXY *italics* and **bold** (any number of outer *)
+        &.ace_virtual-comment
+            @include style.text($md_bold)
+            background-color: list.nth($r_comment, 2)
+
+
+
+// R names AKA symbols
+.ace_line > .ace_identifier.ace_support
+    @include style.text($r_symbol)
+
+    // R package names to left of ::
+    &.ace_class
+        @include style.text($r_package)
+
+    // R function names
+    &.ace_function
+        @include style.text($r_function)
+
+        // ROXY argument names
+        &.ace_virtual-comment
+            @include style.text($doc_arg)
+            background-color: list.nth($r_comment, 2)
+
+
+
+// R `function`, `if`, and other reserved words
+// RMD [Link caption]() and <Quick link>
+.ace_line > .ace_keyword
+    @include style.text($r_function)
+
+    // R <- = : + | :: etc.
+    &.ace_operator
+        @include style.text($r_operator)
+
+        // R %in% and other %infixes%
+        &.ace_infix
+            @include style.text($r_operator)
+
+    // ROXY @param, @return, \donttest, etc. tags
+    &.ace_virtual-comment
+        @include style.text($doc_tag)
+        background-color: list.nth($r_comment, 2)
+
+
+// YAML fields (title: etc.)
+.ace_line > .ace_meta.ace_tag
+    @include style.text($doc_tag)
+
+
+
+// RMD `code`
+.ace_line > .ace_support.ace_function
+    @include style.text($md_code)
+
+    // RST code chunk first line
+    &.ace_codebegin
+        @include style.text($chunk_head)
+
+    // RST code chunk last line
+    &.ace_codeend
+        @include style.text($chunk_tail)
+
+    // ROXY `code`
+    &.ace_virtual-comment
+        @include style.text($md_code)
+        background-color: list.nth($r_comment, 2)
+
+
+// R strings
+.ace_line
+
+    .ace_string
+        @include style.text($r_character)
+
+    // RMD > blockquote
+    &.ace_blockquote
+        @include style.text($md_blockquote)
+
+
+// RST whitespace if showing them is enabled
+.ace_line > .ace_invisible
+    @include style.text($whitespace)
+    // RST spaces
+    // &.ace_invisible_space
+
+    // RST tabs
+    // &.ace_invisible_tab
+
+    // RST paragraph breaks
+    // &.ace_invisible_eol
+
+// RST unprintable characters
+.ace_line > .ace_invalid
+    @include style.text($unprintable)
+
+// RMD Headings
+.ace_line > .ace_heading
+    @include style.text($md_heading)
+
+
+
+// RMD [](Link URLs)
+.ace_line > .ace_markup.ace_href
+    @include style.text($md_url)
+
+// RMD [1]: URL in footnote
+.ace_line > .ace_url
+    @include style.text($md_url)
+
+
+.ace_line > .ace_fold // RST Folded section icon
+    @include style.text($fold)
+
+// R commas, for some reason
+// .ace_line > .ace_punctuation.ace_keyword.ace_operator
+
+
+// Layer for selections.
+.ace_marker-layer
+
+    // PANE: Active text selection in the Script pane
+    .ace_selection
+        @include style.outline($active)
+
+        // PANE: Styles the first line of selected text
+        // &.ace_start
+
+    // PANE: Inactive text selection in the Script pane (e.g. when double-clicking a variable
+    // name, your double-clicked word is highlighted with .ace_selection, but all other instances
+    // of that word are highlighted with .ace_selected-word.)
+    .ace_selected-word
+        @include style.outline($inactive)
+        border-radius: 3px
+
+    // PANE: Highlight for active line in Script pane
+    .ace_active-line
+        @include style.outline($currline)
+
+    // PANE: Highlight for current line in debug() tool
+    .ace_active_debug_line
+        @include style.outline($debug)
+        position: absolute
+
+// PANE: Line numbers, background behind them.
+.ace_gutter
+    @include style.text($gutter)
+
+// PANE: Line length ruler
+.ace_print-margin
+    @include style.border($line_ruler, "-right")
+
+
+// ------- Help pane -----------------------------------------------------------
+
+// PANE: Links in Help panel.
+.ace_editor_theme a
+    @include style.text($help_link)
+
+
+
+// ------- Indentation and brackets rainbow colouring --------------------------
+
+// Indent guide: "Grey lines"
+.ace_indent-guide
+    @include style.border($indent_guide, "-left")
+
+// Indent guide: "Rainbow lines"
+.rstudio_rainbow_indent_guides //.ace_line
+    .ace_indent-guide:nth-child(7n+1)
+        background: linear-gradient(to left, $rainbow0 1px, transparent 1px, transparent)
+    .ace_indent-guide:nth-child(7n+2)
+        background: linear-gradient(to left, $rainbow1 1px, transparent 1px, transparent)
+    .ace_indent-guide:nth-child(7n+3)
+        background: linear-gradient(to left, $rainbow2 1px, transparent 1px, transparent)
+    .ace_indent-guide:nth-child(7n+4)
+        background: linear-gradient(to left, $rainbow3 1px, transparent 1px, transparent)
+    .ace_indent-guide:nth-child(7n+5)
+        background: linear-gradient(to left, $rainbow4 1px, transparent 1px, transparent)
+    .ace_indent-guide:nth-child(7n+6)
+        background: linear-gradient(to left, $rainbow5 1px, transparent 1px, transparent)
+    .ace_indent-guide:nth-child(7n+7)
+        background: linear-gradient(to left, $rainbow6 1px, transparent 1px, transparent)
+
+// Indent guide: Rainbow fill
+.rstudio_rainbow_indent_fills //.ace_line
+    .ace_indent-guide:nth-child(7n+1)
+        background: linear-gradient(to left, $rainbow0 1px, color.adjust($rainbow0, $alpha: -0.4) 1px, color.adjust($rainbow0, $alpha: -0.8) )
+    .ace_indent-guide:nth-child(7n+2)
+        background: linear-gradient(to left, $rainbow1 1px, color.adjust($rainbow1, $alpha: -0.4) 1px, color.adjust($rainbow1, $alpha: -0.8) )
+    .ace_indent-guide:nth-child(7n+3)
+        background: linear-gradient(to left, $rainbow2 1px, color.adjust($rainbow2, $alpha: -0.4) 1px, color.adjust($rainbow2, $alpha: -0.8) )
+    .ace_indent-guide:nth-child(7n+4)
+        background: linear-gradient(to left, $rainbow3 1px, color.adjust($rainbow3, $alpha: -0.4) 1px, color.adjust($rainbow3, $alpha: -0.8) )
+    .ace_indent-guide:nth-child(7n+5)
+        background: linear-gradient(to left, $rainbow4 1px, color.adjust($rainbow4, $alpha: -0.4) 1px, color.adjust($rainbow4, $alpha: -0.8) )
+    .ace_indent-guide:nth-child(7n+6)
+        background: linear-gradient(to left, $rainbow5 1px, color.adjust($rainbow5, $alpha: -0.4) 1px, color.adjust($rainbow5, $alpha: -0.8) )
+    .ace_indent-guide:nth-child(7n+7)
+        background: linear-gradient(to left, $rainbow6 1px, color.adjust($rainbow6, $alpha: -0.4) 1px, color.adjust($rainbow6, $alpha: -0.8) )
+
+.ace_paren
+    &.ace_paren_color_0  // R: Rainbow parentheses
+        color: $rainbow0
+    &.ace_paren_color_1
+        color: $rainbow1
+    &.ace_paren_color_2
+        color: $rainbow2
+    &.ace_paren_color_3
+        color: $rainbow3
+    &.ace_paren_color_4
+        color: $rainbow4
+    &.ace_paren_color_5
+        color: $rainbow5
+    &.ace_paren_color_6
+        color: $rainbow6
+
+
+
+// ------- Console pane -------------------------------------------------------
+
+// PANE: Errors, warnings, and messages in console
+.GND-IWGDB3B.ace_constant.ace_language
+    @include style.text($err_warn_msg)
+
+
+
+// ------- Terminal pane ------------------------------------------------------
+
+.terminal
+    color: list.nth($editor, 1)
+    background-color: list.nth($editor, 2)
+    font-feature-settings: "liga" 0
+    position: relative
+    user-select: none
+    -ms-user-select: none
+    -webkit-user-select: none
+
+    // Text selected inside the Terminal pane.
+    .xterm-selection div
+        position: absolute
+        background-color: list.nth($editor, 1)
+
+    .xterm-viewport
+        background-color: list.nth($editor, 2)
+        overflow-y: scroll
+
+.xtermInvertColor
+    color: list.nth($editor, 2)
+
+.xtermInvertBgColor
+    background-color: list.nth($editor, 1)
+
+
+// This file contains all of the terminal-related stuff. It comes to 550 lines.
+
+// There is a 'terminal_dark' for dark themes, and a 'terminal_light' for others.
+// 'terminal_dark' was copied from the Ambience built-in theme.
+// 'terminal_light' was copied from the Textmate (default) theme.
+
+// I use @import so that I can have them at the end of the document.
+@import "terminal_light"
+
+
+
+// ------- UI elements --------------------------------------------------------
+
+// Undoes the double layering behind minimise/maximise pane buttons
+.GND-IWGDKS
+    background: none !important
+
+.rstudio-themes-flat
+    @include style.text($editor)
+
+    .rstudio-themes-default
+        background-color: list.nth($pane_div, 4)
+
+        // The draggable dividers between panes
+        .gwt-SplitLayoutPanel-HDragger,
+        .gwt-SplitLayoutPanel-VDragger
+            background-color: list.nth($pane_div, 4) !important
+
+        .gwt-TabLayoutPanelTabs
+
+            // One tab in the tab panel
+            .gwt-TabLayoutPanelTab
+                border: 1px solid list.nth($ui_tab_bar, 4)  // This visually separates tabs.
+
+            // Active tabs in panes
+            .gwt-TabLayoutPanelTab-selected table.rstheme_tabLayoutCenter
+                @include style.border($ui_active_tab)
+
+            // Inactive tabs in panes
+            table.rstheme_tabLayoutCenter
+                @include style.border($ui_inactive_tab)
+
+            // Area behind minimise/maximise pane buttons
+            .GND-IWGDKS
+                @include style.border($ui_tab_bar)
+
+
+
+// Tabs in minimised panes
+.rstudio-themes-default .rstheme_minimizedWindowObject table.rstheme_tabLayoutCenter
+    @include style.border($ui_inactive_tab)
+
+// Border around panes
+.rstudio-themes-default .GND-IWGDGW > div:last-child,
+.rstudio-themes-default .rstheme_minimizedWindowObject>div:last-child
+    @include style.border($pane_div)
+
+// Border around minimised panes
+.rstudio-themes-default .gwt-TabLayoutPanelTabs,
+.rstudio-themes-default .rstheme_minimizedWindowObject .rstheme_center
+    background: list.nth($ui_tab_bar, 4)
+
+// Unsaved tab
+table.GND-IWGDLU.GND-IWGDLP .gwt-Label.GND-IWGDAQ
+    @include style.text($unsaved_file)
+
+.rstudio-themes-default .rstheme_toolbarWrapper table
+    background-color: list.nth($ui_active_tab, 4)
+
+
+
+
+//.rstudio-themes-flat .rstudio-themes-default .gwt-TabLayoutPanelTabs table.rstheme_tabLayoutCenter  // Inactive pane tabs
+//	turn broder off
+
+//.rstudio-themes-flat .rstudio-themes-default .gwt-TabLayoutPanelTabs .gwt-TabLayoutPanelTab-selected table.rstheme_tabLayoutCenter
+//	turn border on !important
