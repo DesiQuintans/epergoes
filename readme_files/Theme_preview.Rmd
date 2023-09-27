@@ -23,11 +23,10 @@ qui officia deserunt mollit [anim id est](http://www.test.com) laborum.
 # This block should be folded for the screenshot.
 ```
 
-
 ```{r blockname, echo=TRUE, eval=FALSE}
 #' Mirror the rows/cols of a matrix
 #'
-#' @param mat (Matrix) A matrix.
+#' @param mat (Matrix) A matrix. Here's some *bold text* and _italic text_
 #' @param MARGIN (Integer) `1` to reverse order of cols, `2` to reverse rows.
 #'
 #' @return A mirrored matrix.
@@ -35,7 +34,9 @@ qui officia deserunt mollit [anim id est](http://www.test.com) laborum.
 #'
 #' @md
 mirror_matrix <- function(mat, MARGIN = 2) {
-    # Here's an inline comment with a *bold comment* and _italic comment_.
+    # Here's an inline comment with a *bold comment* and _italic comment_
+    # (unfortunately, RStudio doesn't allow styling of Markdown content inside
+    # inline comments).
     new_order <- dim(mat)[MARGIN]:1 
     
     if (MARGIN == 1 | MARGIN == TRUE) {

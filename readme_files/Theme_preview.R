@@ -1,5 +1,4 @@
 
-
 # Section header ----------------------------------------------------------
 
 #' Mirror the rows/cols of a matrix
