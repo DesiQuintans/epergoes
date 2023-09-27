@@ -1,99 +1,65 @@
-# RStudioThemeTemplate
+_Epergoes_ - A colourblind-safe light theme for RStudio
+===========================================================
 
-This is a SASS template for making custom RStudio themes, including editor syntax highlighting. It has the most complete support for syntax highlighting that I've yet seen.
+![](https://github.com/DesiQuintans/epergoes/blob/main/readme_files/preview_r.png?raw=true)
 
-To actually use the theme template, click the big **Use this Template** button at the top-right of this pane and make your own copy of it. 
+_Epergoes_\* is a theme for RStudio that I designed to meet
+a few key needs:
 
-Install [SASS](sass-lang.com/) and compile the `.sass` file to a `.rstheme` file with
+1. **Be a colourblind-safe light theme**; most colourblind-safe themes 
+   seem to be dark.
+   
+2. **Don't use colour for type indication.** I don't get any utility out of
+   seeing Numerics in a different colour than Logicals; I already know this
+   by reading the code. There is one exception...
 
-    sass --watch "Template_Dark.sass" "C:\Program Files\RStudio\resources\app\resources\themes\Template_Dark.rstheme"
-    
-And set it as your theme in RStudio. To reflect any new changes, right-click in RStudio and select Reload.
+3. **Use colour to show unclosed Character strings.** In _Epergoes_, strings 
+   get a coloured background so that if a string isn't closed properly, you 
+   will see that background colour spread to the rest of your code immediately.
 
-PS. You can quickly clear out the preset colours by doing a regex find replace: `#.{6}` → `inherit`.
+4. **Facilitate code skimming.** I often scroll through scripts looking for 
+   section headers, so those show up as fat blue lines. I often scan code 
+   blocks by looking for the functions used in them, so function names show 
+   as bold blue text.
 
+5. **Make comments hyper-visible.** Good comments communicate important
+   information about the *rationale and intent* of code that can't be 
+   communicated by the code itself. For example, why did you omit a variable 
+   from your models when the variable seems very relevant? Comments in 
+   _Epergoes_ are therefore [loud and visible][1].
 
-## Features
-
-- Only has style selectors that actually do something, gleaned from long and painful element inspection in RStudio
-- Properly separates syntax highlighting from Markdown highlighting/styles
-- Exposes rainbow brackets and rainbow indent guides
-
-
-## Limitations of RStudio/ACE editor
-
-- You can't have text elements of different sizes; it makes the visual cursor no longer point to where the cursor actually is.
-- Same for editing the padding and margins of elements too much, it makes the cursor misaligned with the real cursor position.
-- Basically all items are spans and display inline. Many elements *can* be made to `display: block`, but it can have unintended effects. For example, styling the first and last line of code chunks as `display: block` means that you can have code blocks that are fully surrounded by a border or book-ended with a different colour background, but it also means that these items will fold into three separate lines instead of folding down to one line.
-- The Terminal pane is a bit of a bother. The styles dedicated to its colours take up 500+ lines, so they're in a separate file that gets `@import`ed. I haven't exposed any of the terminal's colours as variables because it was way too easy to accidentally make it unusable.
-
-
-## Theme preview
-
-These colours weren't chosen to be pleasing, they were chosen to show that nearly everything can be styled in this template.
-
-![](template_preview.png)
+![](https://github.com/DesiQuintans/epergoes/blob/main/readme_files/preview_rmd.png?raw=true)
 
 
-## Variable dictionary (things you can edit out-of-the-box)
 
-If anything isn't already here, just add it yourself. 
+Installation
+-----------------------------------------------------------
 
-| Variable name           | User interface                           | R syntax                                                    | Rmarkdown elements                  | Notes                                                                                                    |
-|-------------------------|------------------------------------------|-------------------------------------------------------------|-------------------------------------|----------------------------------------------------------------------------------------------------------|
-| $base_text_clr          |                                          |                                                             | Regular text                        |                                                                                                          |
-| $whitespace_clr         |                                          | Whitespace, if 'Show whitespace characters' is enabled.     |                                     | Spaces and EOLs can be separately styled, but I did not include that in   this template.                 |
-| $cursor_clr             | Text cursor                              |                                                             |                                     |                                                                                                          |
-| $editor_bg              | Background of all panes                  |                                                             |                                     | Editable panes (Editor, Console, Render) and non-editable panes (all   others) can be styled separately. |
-| $activeline_bg          | Active line highlight, if enabled.       |                                                             |                                     |                                                                                                          |
-| $activeline_bdr         | Active line highlight, if enabled.       |                                                             |                                     |                                                                                                          |
-| $debugline_bg           | Active line in debugger                  |                                                             |                                     |                                                                                                          |
-| $codechunk_bg           |                                          |                                                             | Rmarkdown code chunks               | First and last line of code chunks can be styled separately.                                             |
-| $codechunk_bdr          |                                          |                                                             | Rmarkdown code chunks               |                                                                                                          |
-| $codechunk_clr          |                                          |                                                             | Rmarkdown code chunks               |                                                                                                          |
-| $fold_clr               | Folded block indicator                   |                                                             |                                     |                                                                                                          |
-| $gutter_bg              | Gutter background                        |                                                             |                                     |                                                                                                          |
-| $gutter_clr             | Line number colour                       |                                                             |                                     |                                                                                                          |
-| $active_selection_bg    | Active selection                         |                                                             |                                     |                                                                                                          |
-| $active_selection_bdr   | Active selection                         |                                                             |                                     |                                                                                                          |
-| $inactive_selection_bg  | Inactive selection (e.g. matching words) |                                                             |                                     |                                                                                                          |
-| $inactive_selection_bdr | Inactive selection (e.g. matching words) |                                                             |                                     |                                                                                                          |
-| $ruler_bdr              | Line length ruler                        |                                                             |                                     |                                                                                                          |
-| $matching_bdr           |                                          | Matching bracket                                            |                                     |                                                                                                          |
-| $invalid_clr            |                                          | Undisplayable characters (e.g. Unicode chars in ASCII file) |                                     |                                                                                                          |
-| $invalid_bg             |                                          | Undisplayable characters (e.g. Unicode chars in ASCII file) |                                     |                                                                                                          |
-| $comment_clr            |                                          | Comments and Roxygen blocks                                 |                                     |                                                                                                          |
-| $comment_bg             |                                          | Comments and Roxygen blocks                                 |                                     |                                                                                                          |
-| $keyword_clr            |                                          | if, else, stop, etc.                                        |                                     |                                                                                                          |
-| $function_clr           |                                          | Function names, if 'Highlight R function calls' enabled     |                                     |                                                                                                          |
-| $package_clr            |                                          | Package names to the left of ::                             |                                     |                                                                                                          |
-| $operator_clr           |                                          | <- = > etc.                                                 |                                     |                                                                                                          |
-| $infix_clr              |                                          | %in% %>% etc.                                               |                                     |                                                                                                          |
-| $comma_clr              |                                          | Commas can be specifically styled, for some reason.         |                                     |                                                                                                          |
-| $constant_clr           |                                          | TRUE, FALSE, NA, NULL                                       |                                     |                                                                                                          |
-| $numeric_clr            |                                          | Integers and Numeric                                        |                                     |                                                                                                          |
-| $string_clr             |                                          | Strings                                                     |                                     |                                                                                                          |
-| $var_arg_clr            |                                          | Variable names and argument names                           |                                     | Sadly, variable names and argument names cannot be styled separately.                                    |
-| $yamlkey_clr            |                                          |                                                             | YAML keys e.g. `title:`             |                                                                                                          |
-| $code_clr               |                                          |                                                             | Backticked and indented code blocks |                                                                                                          |
-| $bold_clr               |                                          |                                                             | Bold text                           |                                                                                                          |
-| $italic_clr             |                                          |                                                             | Italicised text                     |                                                                                                          |
-| $heading_clr            |                                          |                                                             | Headings of all levels              |                                                                                                          |
-| $heading_bg             |                                          |                                                             | Headings of all levels              |                                                                                                          |
-| $url_clr                |                                          |                                                             | Web addresses                       |                                                                                                          |
-| $blockquote_clr         |                                          |                                                             | Blockquotes                         |                                                                                                          |
-| $help_link_clr          | In Help pane, colour of link text.       |                                                             |                                     |                                                                                                          |
-| $help_link_bg           | In Help pane, background of link text.   |                                                             |                                     |                                                                                                          |
-| $indent_guide_bdr       | "Grey lines" style indent guide          |                                                             |                                     |                                                                                                          |
-| $rainbow0               | Rainbow indent                           | Rainbow brackets                                            |                                     | Rainbow indent styles (lines vs fill) and rainbow brackets can all be   styled separately.               |
-| $rainbow1               | Rainbow indent                           | Rainbow brackets                                            |                                     |                                                                                                          |
-| $rainbow2               | Rainbow indent                           | Rainbow brackets                                            |                                     |                                                                                                          |
-| $rainbow3               | Rainbow indent                           | Rainbow brackets                                            |                                     |                                                                                                          |
-| $rainbow4               | Rainbow indent                           | Rainbow brackets                                            |                                     |                                                                                                          |
-| $rainbow5               | Rainbow indent                           | Rainbow brackets                                            |                                     |                                                                                                          |
-| $rainbow6               | Rainbow indent                           | Rainbow brackets                                            |                                     |                                                                                                          |
+You need to be running RStudio v 1.2.x or greater.
+
+First, install the `rstudioapi` package.
+
+``` r
+install.packages("rstudioapi")
+```
+
+Then, run the command below to install the theme.
+
+``` r
+rstudioapi::addTheme("https://github.com/DesiQuintans/epergoes/releases/download/1.0.0/Epergoes_Light.rstheme",
+apply = TRUE, force = TRUE)
+```
+
+You can change the active theme at any time by going to (Tools → Global
+Options → Appearance) and applying a new theme.
+
+The theme can be uninstalled by selecting it in the list and clicking (Remove).
 
 
-## Licensing
 
-This is under the Unlicense and dedicated to the public domain. It would be nice if you gave this project credit if you used it so that others could use it too.
+***********************************************************
+
+\* The name "Epergoes" has no meaning to me, and was 
+randomly generated and chosen for SEO purposes.
+
+[1]: https://www.benkuhn.net/syntax/
